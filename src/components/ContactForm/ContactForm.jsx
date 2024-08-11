@@ -1,68 +1,62 @@
-import React from 'react';
-import { useId } from 'react';
-import css from './ContactForm.module.css';
-import { Field, Form, Formik, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
-import { useDispatch } from 'react-redux';
-import { addContact } from '../../redux/contactsOps';
-import toast from 'react-hot-toast';
-
-const FeedbackSchema = Yup.object().shape({
-  name: Yup.string().min(3, "Too Short!").max(50, "Too Long!").required("Required"),
-  number: Yup.string().min(3, "Too Short!").max(50, "Too Long!").required("Required"),
-});
-
-export default function ContactForm() {
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+import { nanoid } from "nanoid";
+import { useId } from "react";
+import { useDispatch } from "react-redux";
+import { toast } from "react-hot-toast";
+import { addContact } from "../../redux/contacts/operations";
+import css from "./ContactForm.module.css";
+const ContactForm = () => {
   const dispatch = useDispatch();
-  const nameFieldId = useId();
-  const numberFieldId = useId();
-
-  const initialValues = {
-    name: "",
-    number: ""
-  };
-
+  const nameId = useId();
+  const numberId = useId();
+  const dataValid = Yup.object().shape({
+    name: Yup.string("Must be a string!")
+      .trim()
+      .min(3, "Too short!")
+      .max(50, "Too long!")
+      .required("Required"),
+    number: Yup.string()
+      .trim()
+      .min(3, "Too Short!")
+      .max(50, "Too Long!")
+      .required("Required"),
+  });
   const handleSubmit = (values, actions) => {
-    dispatch(addContact(values))
-      .unwrap()
-      .then(() => {
-        actions.resetForm();
-        toast.success('Contact added successfully!');
+    dispatch(
+      addContact({
+        ...values,
+        id: nanoid(),
       })
-      .catch(error => {
-        toast.error(`Failed to add contact: ${error}`);
-      });
+    );
+    toast.success("Contact added successfully!");
+    actions.resetForm();
   };
-
   return (
     <Formik
-      initialValues={initialValues}
+      initialValues={{
+        name: "",
+        number: "",
+      }}
+      validationSchema={dataValid}
       onSubmit={handleSubmit}
-      validationSchema={FeedbackSchema}
     >
       <Form className={css.container}>
-        <div>
-          <label className={css.label}>Name</label>
-          <Field
-            className={css.field}
-            type="text"
-            name="name"
-            id={nameFieldId}
-          />
-          <ErrorMessage className={css.error} name="name" component="span" />
+        <div className={css.inputField}>
+          <label htmlFor={nameId}>Name</label>
+          <Field id={nameId} name="name" />
+          <ErrorMessage name="name" component="span" className={css.error} />
         </div>
-        <div>
-          <label className={css.label}>Number</label>
-          <Field
-            className={css.field}
-            type="text"
-            name="number"
-            id={numberFieldId}
-          />
-          <ErrorMessage className={css.error} name="number" component="span" />
+        <div className={css.inputField}>
+          <label htmlFor={numberId}>Number</label>
+          <Field id={numberId} name="number" />
+          <ErrorMessage name="number" component="span" className={css.error} />
         </div>
-        <button className={css.btn} type="submit">Add contact</button>
+        <button type="submit" className={css.button}>
+          Add contact
+        </button>
       </Form>
     </Formik>
   );
-}
+};
+export default ContactForm;

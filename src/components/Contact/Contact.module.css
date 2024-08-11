@@ -1,26 +1,24 @@
-.container{
+.container {
+    width: 400px;
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    gap: 20px 10px;
-    padding: 10px;
-}
-.item{
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-.itemUser{
-    display: flex;
-    gap: 10px;
-}
-.text{
-    font-size: 20px;
-    font-weight: 500;
-}
-.btn{
-    font-size: 20px;
-    font-weight: 500;
-    height: 30px;
+    align-items: center;
+    border: 1px solid black;
     border-radius: 4px;
+    padding: 12px;
+}
+.name,
+.number {
+    font-size: 20px;
+}
+.contactsInfo {
+    display: flex;
+    gap: 12px;
+}
+.button {
+    border: none;
+    border-radius: 4px;
+    background-color: rgb(143, 141, 141);
+    padding: 4px 8px;
+    font-size: 12px;
 }
